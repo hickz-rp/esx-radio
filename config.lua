@@ -43,18 +43,18 @@ Config.RestrictedChannels = {
     }
 }
 
-Config.MaxFrequency = 500
+Config.MaxFrequency = 2000
 
 Config.messages = {
-    ["not_on_radio"] = "You're not connected to a signal",
-    ["on_radio"] = "You're already connected to this signal",
-    ["joined_to_radio"] = "You're connected to: ",
-    ["restricted_channel_error"] = "You can not connect to this signal!",
-    ["invalid_radio"] = "This frequency is not available.",
-    ["you_on_radio"] = "You're already connected to this channel",
-    ["you_leave"] = "You left the channel.",
-    ['volume_radio'] = 'New volume ',
-    ['decrease_radio_volume'] = 'The radio is already set to maximum volume',
-    ['increase_radio_volume'] = 'The radio is already set to the lowest volume',
-    ['increase_decrease_radio_channel'] = 'New channel ',
+    ["not_on_radio"] = "Vous n'êtes pas connecté à un signal",
+    ["on_radio"] = "Vous êtes déjà connecté à ce signal",
+    ["joined_to_radio"] = "Vous êtes connecté à : ",
+    ["restricted_channel_error"] = "Vous ne pouvez pas vous connecter à ce signal !",
+    ["invalid_radio"] = "Cette fréquence n'est pas disponible.",
+    ["you_on_radio"] = "Vous êtes déjà connecté à ce channel",
+    ["you_leave"] = "Vous avez quitté le channel.",
+    ['volume_radio'] = 'Nouveau volume ',
+    ['decrease_radio_volume'] = 'La radio est déjà réglée sur le volume maximum',
+    ['increase_radio_volume'] = 'La radio est déjà réglée sur le volume le plus bas',
+    ['increase_decrease_radio_channel'] = 'Nouveau channel ',
 }

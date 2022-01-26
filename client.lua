@@ -1,5 +1,3 @@
-local QBCore = exports['qb-core']:GetCoreObject()
-local PlayerData = QBCore.Functions.GetPlayerData() -- Just for resource restart (same as event handler)
 local radioMenu = false
 local onRadio = false
 local RadioChannel = 0
@@ -36,14 +34,16 @@ local function connecttoradio(channel)
     end
     exports["pma-voice"]:setRadioChannel(channel)
     if SplitStr(tostring(channel), ".")[2] ~= nil and SplitStr(tostring(channel), ".")[2] ~= "" then
-        QBCore.Functions.Notify(Config.messages['joined_to_radio'] ..channel.. ' MHz', 'success')
+        exports['okokNotify']:Alert("RADIO", Config.messages["joined_to_radio"] ..channel.. " MHz", 1000, "success")
     else
-        QBCore.Functions.Notify(Config.messages['joined_to_radio'] ..channel.. '.00 MHz', 'success')
+        exports['okokNotify']:Alert("RADIO", Config.messages["joined_to_radio"] ..channel.. ".00 MHz", 1000, "success")
     end
 end
 
 local function closeEvent()
-	TriggerEvent("InteractSound_CL:PlayOnOne","click",0.6)
+    SendNUIMessage({
+        type = "close-sound"
+    })
 end
 
 local function leaveradio()
@@ -52,7 +52,7 @@ local function leaveradio()
     onRadio = false
     exports["pma-voice"]:setRadioChannel(0)
     exports["pma-voice"]:setVoiceProperty("radioEnabled", false)
-    QBCore.Functions.Notify(Config.messages['you_leave'] , 'error')
+    exports['okokNotify']:Alert("RADIO", Config.messages["you_leave"], 1000, "error")
 end
 
 local function toggleRadioAnimation(pState)
@@ -92,24 +92,11 @@ end
 exports("IsRadioOn", IsRadioOn)
 
 --Events
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-    PlayerData = QBCore.Functions.GetPlayerData()
-end)
-
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-    PlayerData = {}
-    leaveradio()
-end)
-
-RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
-    PlayerData = val
-end)
-
-RegisterNetEvent('qb-radio:use', function()
+RegisterNetEvent('radio:use', function()
     toggleRadio(not radioMenu)
 end)
 
-RegisterNetEvent('qb-radio:onRadioDrop', function()
+RegisterNetEvent('radio:onRadioDrop', function()
     if RadioChannel ~= 0 then
         leaveradio()
     end
@@ -122,28 +109,28 @@ RegisterNUICallback('joinRadio', function(data, cb)
         if rchannel <= Config.MaxFrequency and rchannel ~= 0 then
             if rchannel ~= RadioChannel then
                 if Config.RestrictedChannels[rchannel] ~= nil then
-                    if Config.RestrictedChannels[rchannel][PlayerData.job.name] and PlayerData.job.onduty then
+                    if Config.RestrictedChannels[rchannel][ESX.PlayerData.job.name] then
                         connecttoradio(rchannel)
                     else
-                        QBCore.Functions.Notify(Config.messages['restricted_channel_error'], 'error')
+                        exports['okokNotify']:Alert("RADIO", Config.messages["restricted_channel_error"], 1000, "error")
                     end
                 else
                     connecttoradio(rchannel)
                 end
             else
-                QBCore.Functions.Notify(Config.messages['you_on_radio'] , 'error')
+                exports['okokNotify']:Alert("RADIO", Config.messages["you_on_radio"], 1000, "error")
             end
         else
-            QBCore.Functions.Notify(Config.messages['invalid_radio'] , 'error')
+            exports['okokNotify']:Alert("RADIO", Config.messages["invalid_radio"], 1000, "error")
         end
     else
-        QBCore.Functions.Notify(Config.messages['invalid_radio'] , 'error')
+        exports['okokNotify']:Alert("RADIO", Config.messages["invalid_radio"], 1000, "error")
     end
 end)
 
 RegisterNUICallback('leaveRadio', function(data, cb)
     if RadioChannel == 0 then
-        QBCore.Functions.Notify(Config.messages['not_on_radio'], 'error')
+        exports['okokNotify']:Alert("RADIO", Config.messages["not_on_radio"], 1000, "error")
     else
         leaveradio()
     end
@@ -152,27 +139,27 @@ end)
 RegisterNUICallback("volumeUp", function()
 	if RadioVolume <= 95 then
 		RadioVolume = RadioVolume + 5
-		QBCore.Functions.Notify(Config.messages["volume_radio"] .. RadioVolume, "success")
+        exports['okokNotify']:Alert("RADIO", Config.messages["volume_radio"] .. RadioVolume, 1000, "success")
 		exports["pma-voice"]:setRadioVolume(RadioVolume)
 	else
-		QBCore.Functions.Notify(Config.messages["decrease_radio_volume"], "error")
+        exports['okokNotify']:Alert("RADIO", Config.messages["decrease_radio_volume"], 1000, "error")
 	end
 end)
 
 RegisterNUICallback("volumeDown", function()
 	if RadioVolume >= 10 then
 		RadioVolume = RadioVolume - 5
-		QBCore.Functions.Notify(Config.messages["volume_radio"] .. RadioVolume, "success")
+		exports['okokNotify']:Alert("RADIO", Config.messages["volume_radio"] .. RadioVolume, 1000, "success")
 		exports["pma-voice"]:setRadioVolume(RadioVolume)
 	else
-		QBCore.Functions.Notify(Config.messages["increase_radio_volume"], "error")
+        exports['okokNotify']:Alert("RADIO", Config.messages["increase_radio_volume"], 1000, "error")
 	end
 end)
 
 RegisterNUICallback("increaseradiochannel", function(data, cb)
     local newChannel = RadioChannel + 1
     exports["pma-voice"]:setRadioChannel(newChannel)
-    QBCore.Functions.Notify(Config.messages["increase_decrease_radio_channel"] .. newChannel, "success")
+    exports['okokNotify']:Alert("RADIO", Config.messages["increase_decrease_radio_channel"] .. newChannel, 1000, "success")
 end)
 
 RegisterNUICallback("decreaseradiochannel", function(data, cb)
@@ -180,7 +167,7 @@ RegisterNUICallback("decreaseradiochannel", function(data, cb)
     local newChannel = RadioChannel - 1
     if newChannel >= 1 then
         exports["pma-voice"]:setRadioChannel(newChannel)
-        QBCore.Functions.Notify(Config.messages["increase_decrease_radio_channel"] .. newChannel, "success")
+        exports['okokNotify']:Alert("RADIO", Config.messages["increase_decrease_radio_channel"] .. newChannel, 1000, "success")
     end
 end)
 
@@ -197,7 +184,7 @@ CreateThread(function()
     while true do
         Wait(1000)
         if LocalPlayer.state.isLoggedIn and onRadio then
-            QBCore.Functions.TriggerCallback('qb-radio:server:GetItem', function(hasItem)
+            ESX.TriggerServerCallback("radio:server:GetItem", function(hasItem)
                 if not hasItem then
                     if RadioChannel ~= 0 then
                         leaveradio()

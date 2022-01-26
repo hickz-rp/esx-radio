@@ -1,10 +1,8 @@
-local QBCore = exports['qb-core']:GetCoreObject()
-
-QBCore.Functions.CreateUseableItem("radio", function(source, item)
-    TriggerClientEvent('qb-radio:use', source)
+ESX.RegisterUsableItem("radio", function(source, item)
+    TriggerClientEvent("radio:use", source)
 end)
 
-QBCore.Functions.CreateCallback('qb-radio:server:GetItem', function(source, cb, item)
+ESX.RegisterServerCallback("radio:server:GetItem", function(source, cb, item)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
     if Player ~= nil then
@@ -20,9 +18,16 @@ QBCore.Functions.CreateCallback('qb-radio:server:GetItem', function(source, cb, 
     end
 end)
 
+ESX.RegisterServerCallback('radio:getItemAmount', function(source, cb, item)
+	local xPlayer = ESX.GetPlayerFromId(source)
+	local quantity = xPlayer.getInventoryItem(item).count
+
+	cb(quantity)
+end)
+
 for channel, config in pairs(Config.RestrictedChannels) do
     exports['pma-voice']:addChannelCheck(channel, function(source)
-        local Player = QBCore.Functions.GetPlayer(source)
-        return config[Player.PlayerData.job.name] and Player.PlayerData.job.onduty
+        local xPlayer = ESX.GetPlayerFromId(source)
+        return config[xPlayer.job.name]
     end)
 end

@@ -1,3 +1,5 @@
+*Modified for Hickz, now working with ESX*
+
 # qb-radio
 Radio Script With UI
 
