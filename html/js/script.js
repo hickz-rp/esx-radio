@@ -13,6 +13,12 @@ $(function() {
             audioElem.load();
             audioElem.play();
         }
+
+        if (event.data.type == "on-sound") {
+            var audioElem = document.getElementById("audio_on")
+            audioElem.load();
+            audioElem.play();
+        }
     });
 
     document.onkeyup = function (data) {

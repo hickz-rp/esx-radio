@@ -194,3 +194,11 @@ CreateThread(function()
         end
     end
 end)
+
+AddEventHandler("pma-voice:radioActive", function(active) 
+    if active then
+        SendNUIMessage({
+            type = "on-sound"
+        })
+    end
+end)
