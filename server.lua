@@ -2,13 +2,11 @@ ESX.RegisterUsableItem("radio", function(source, item)
     TriggerClientEvent("radio:use", source)
 end)
 
-ESX.RegisterServerCallback("radio:server:GetItem", function(source, cb, item)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    if Player ~= nil then
-        local RadioItem = Player.Functions.GetItemByName(item)
-        if RadioItem ~= nil and not Player.PlayerData.metadata["isdead"] and
-            not Player.PlayerData.metadata["inlaststand"] then
+ESX.RegisterServerCallback("radio:server:GetItem", function(source, cb, item, isDead)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    if xPlayer ~= nil then
+        local RadioItem = xPlayer.getInventoryItem(item).count
+        if RadioItem > 0 and not isDead then
             cb(true)
         else
             cb(false)

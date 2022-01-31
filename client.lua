@@ -183,14 +183,16 @@ end)
 CreateThread(function()
     while true do
         Wait(1000)
-        if LocalPlayer.state.isLoggedIn and onRadio then
+        if onRadio then
             ESX.TriggerServerCallback("radio:server:GetItem", function(hasItem)
                 if not hasItem then
                     if RadioChannel ~= 0 then
                         leaveradio()
                     end
                 end
-            end, "radio")
+            end, "radio", IsEntityDead(PlayerPedId()))
+        else
+            Wait(5000)
         end
     end
 end)
